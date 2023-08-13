@@ -1,0 +1,61 @@
+# System and IDE Files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+.vs/
+
+# Dependency and Build Files
+node_modules/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm/
+.yarn/
+.pnp.js
+
+# Compiled Output and Build Artifacts
+build/
+dist/
+*.exe
+*.dll
+*.so
+*.jar
+*.war
+*.ear
+*.class
+
+# Temporary and Cache Files
+*.tmp
+.cache/
+.DS_Store
+
+# Environment and Configuration Files
+.env
+.env.local
+.env.*.local
+
+# Sensitive or Private Information
+.env.*
+
+# User-Specific Files
+*.swp
+.swo
+.history/
+.bash_history
+.zsh_history
+
+# Generated or Compiled Files
+*.pyc
+*.pyo
+__pycache__/
+
+# Log Files
+*.log
+*.out
+
+# Database Files
+*.sqlite
+*.db
+*.sql
