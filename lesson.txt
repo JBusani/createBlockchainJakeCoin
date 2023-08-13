@@ -1,0 +1,17 @@
+Key points to achieve and address:
+
+we can create new blocks
+
+but we don't want to create hundreds per second
+and spam our chain
+
+
+security: can simply change data in blocks and 
+recalculate hashes
+
+no proof-of-work
+
+bitcoin: requires the hash to begin with a certain amount of zeroes
+and it uses a difficulty measure to match the rate of speed computers 
+have at solving it (or so). making it harder to guess
+

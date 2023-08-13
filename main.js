@@ -8,10 +8,22 @@ class Block{
         this.data = data; //data is the transaction such as amount, sender, receiver
         this.previousHash = previousHash; //hash of the previous block 
         this.hash = this.calculateHash();
+        this.nonce = 0; //random number that has nothing to do with the block but is used to generate the hash
     }
     //calculate the hash of the block
     calculateHash(){
-     return SHA256(this.index + this.previousHash + this.timestamp + JSON.stringify(this.data)).toString();
+     return SHA256(this.index + this.previousHash + this.timestamp + JSON.stringify(this.data) + this.nonce).toString();
+    }
+    //proof of work. The more zeros the more difficult it is to mine a block
+    mineBlock(difficulty){
+        //substring is used to get the first few characters of the hash
+        //difficulty is the number of zeros we want the hash to start with
+        while(this.hash.substring(0, difficulty) !== Array(difficulty + 1).join("0")){
+            //keep changing the nonce until the hash of the block starts with enough 0s
+            this.nonce++;
+            this.hash = this.calculateHash();
+        }
+        console.log("Block mined: " + this.hash);
     }
 
 }
@@ -19,7 +31,7 @@ class Block{
 class Blockchain{
     constructor(){
         this.chain = [this.createGenesisBlock()];
-
+        this.difficulty = 4; //difficulty of the proof of work
     }
     //first block on the chain is called the genesis block
     //ideally you might want this new blockchain to reflect the date of the first creation. But you need to remember time zones too.
@@ -31,7 +43,7 @@ class Blockchain{
     }
     addBlock(newBlock){
         newBlock.previousHash = this.getLatestBlock().hash; //previous hash is the hash of the latest block
-        newBlock.hash = newBlock.calculateHash(); //recalculate the hash of the new block
+        newBlock.mineBlock(this.difficulty);
         this.chain.push(newBlock);
         //in reality you can't push a new block to the chain so simply
 
@@ -60,16 +72,9 @@ class Blockchain{
 }
 
 let jakecoin = new Blockchain();
+
+console.log('Mining block 1...');
 jakecoin.addBlock(new Block(1, "08/12/2023", {amount: 4}));
-jakecoin.addBlock(new Block(2, "08/12/2023", {amount: 10}));
 
-
-console.log('Is blockchain valid? ' + jakecoin.isChainValid());
-
-//now let's try to tamper with the chain
-jakecoin.chain[1].data = {amount: 100};
-jakecoin.chain[1].hash = jakecoin.chain[1].calculateHash();
-
-console.log('Is blockchain valid? ' + jakecoin.isChainValid());
-
-console.log(JSON.stringify(jakecoin, null, 4));
+console.log('Mining block 2...');
+jakecoin.addBlock(new Block(2, "08/12/2023", {amount: 8}));
