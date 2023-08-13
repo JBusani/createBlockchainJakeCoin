@@ -1,11 +1,19 @@
 const SHA256 =  require('crypto-js/sha256');
 
+//define what a transaction looks like
+class Transaction {
+    constructor(fromAddress, toAddress, amount){
+        this.fromAddress = fromAddress; //public key
+        this.toAddress = toAddress; //public key
+        this.amount = amount; //amount of coins sent
+    }
+}
+
 class Block{
     
-    constructor(index, timestamp, data, previousHash = ''){
-        this.index = index; //optional and tells us where the block sits on the chain
+    constructor(timestamp, transactions, previousHash = ''){
         this.timestamp = timestamp;
-        this.data = data; //data is the transaction such as amount, sender, receiver
+        this.transactions = transactions; //the transaction such as amount, sender, receiver
         this.previousHash = previousHash; //hash of the previous block 
         this.hash = this.calculateHash();
         this.nonce = 0; //random number that has nothing to do with the block but is used to generate the hash
@@ -31,22 +39,51 @@ class Block{
 class Blockchain{
     constructor(){
         this.chain = [this.createGenesisBlock()];
-        this.difficulty = 4; //difficulty of the proof of work
+        this.difficulty = 2; //difficulty of the proof of work
+        this.pendingTransactions = []; //transactions that are waiting to be mined for the next block
+        this.miningReward = 100; //reward for mining a block
     }
     //first block on the chain is called the genesis block
     //ideally you might want this new blockchain to reflect the date of the first creation. But you need to remember time zones too.
     createGenesisBlock(){
-        return new Block(0, "08/13/2023", "Genesis block", "0");
+        return new Block("08/13/2023", "Genesis block", "0");
     }
     getLatestBlock(){
         return this.chain[this.chain.length - 1];
     }
-    addBlock(newBlock){
-        newBlock.previousHash = this.getLatestBlock().hash; //previous hash is the hash of the latest block
-        newBlock.mineBlock(this.difficulty);
-        this.chain.push(newBlock);
-        //in reality you can't push a new block to the chain so simply
+    minePendingTransactions(miningRewardAddress){
+        //if I successfully mine a block, I get a reward. send it to this address
+        let block = new Block(Date.now(), this.pendingTransactions);
+        //in bitcoin, miners can choose which transactions to include in the block
+        //in this case, we will include all pending transactions
+        block.mineBlock(this.difficulty);
+        console.log("Block successfully mined!");
+        this.chain.push(block);
+        //reset the pending transactions and send the mining reward
+        this.pendingTransactions = [
+            new Transaction(null, miningRewardAddress, this.miningReward)
+        ];
 
+    }
+    //add a new transaction to the pending transactions
+    createTransaction(transaction){
+        this.pendingTransactions.push(transaction);
+    }
+    //get the balance of an address
+    getBalanceOfAddress(address){
+        let balance = 0;
+        //loop through each block in the chain
+        for(const block of this.chain){
+            for(const trans of block.transactions){
+                if(trans.fromAddress === address){
+                    balance -= trans.amount;
+                }
+                if(trans.toAddress === address){
+                    balance += trans.amount;
+                }
+            }
+        }
+        return balance;
     }
     //check if the chain is valid
     isChainValid(){
@@ -73,8 +110,15 @@ class Blockchain{
 
 let jakecoin = new Blockchain();
 
-console.log('Mining block 1...');
-jakecoin.addBlock(new Block(1, "08/12/2023", {amount: 4}));
+jakecoin.createTransaction(new Transaction('address1', 'address2', 100));
+jakecoin.createTransaction(new Transaction('address2', 'address1', 50));
 
-console.log('Mining block 2...');
-jakecoin.addBlock(new Block(2, "08/12/2023", {amount: 8}));
+console.log('\n Starting the miner...');
+jakecoin.minePendingTransactions('jakes-address');
+
+console.log('\nBalance of jake is', jakecoin.getBalanceOfAddress('jakes-address'));
+
+console.log('\n Starting the miner again...');
+jakecoin.minePendingTransactions('jakes-address');
+
+console.log('\nBalance of jake is', jakecoin.getBalanceOfAddress('jakes-address'));
