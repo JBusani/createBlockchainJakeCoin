@@ -120,5 +120,5 @@ console.log('\nBalance of jake is', jakecoin.getBalanceOfAddress('jakes-address'
 
 console.log('\n Starting the miner again...');
 jakecoin.minePendingTransactions('jakes-address');
-
+ 
 console.log('\nBalance of jake is', jakecoin.getBalanceOfAddress('jakes-address'));
