@@ -1,0 +1,8 @@
+const env = {
+    PrivateKey: 'e3dfd052028116c3b4236d65b593e9b3a1eff05e763e094d7ff6d2f4a8ab1cad',
+    PublicKey: '0443bdbdc223aa66430a4b108b0e38ab89f9789055237d6d0fa4a0765a920e1d576e2578c812c6e39e7ae4a232fbd2e3c85b7161d7db7376f86d4a2ea0b0aebeba',
+    OtherPrivateKey: '50b8ed673de0c1fd67d9aa079394801146f056a9fb8364cc2d0b7546309bac29',
+    OtherPublicKey: '04bf9c0c43bd557cad3d80e43b371c447d73b442f878a4dd326b54ed4dd1162fd471ec4933cc04cee94b36be3a59c747c9044dc3bcefe2032e9fd447a38e98d342'
+}
+
+module.exports = env;
