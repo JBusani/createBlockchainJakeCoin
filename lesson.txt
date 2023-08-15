@@ -3,3 +3,4 @@ turn it into a simple cryptocurrency
 1. make it so a block can have multiple transactions
 2. add rewards for miners
 
+part-3
